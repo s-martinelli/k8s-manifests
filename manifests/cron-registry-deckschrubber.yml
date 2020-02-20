@@ -20,9 +20,9 @@ spec:
           containers:
           - args:
             - -latest
-            - "5"
+            - <IMAGES_NUMBER> # images' number to be removed
             - -registry
-            - https://10.0.21.13:5000
+            - <REGISTRY_URL>
             - -username
             - <USERNAME>
             - -password
