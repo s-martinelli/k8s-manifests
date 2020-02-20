@@ -1,0 +1,50 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  labels:
+    chart: deckschrubber-0.1
+    name: deckschrubber
+  name: cron-registry-deckschrubber
+  namespace: registry
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: deckschrubber
+            cron: cron-registry-deckschrubber
+        spec:
+          containers:
+          - args:
+            - -latest
+            - "5"
+            - -registry
+            - https://10.0.21.13:5000
+            - -username
+            - <USERNAME>
+            - -password
+            - <PASSWORD>
+            - -insecure
+            image: lhanxetus/deckschrubber:latest
+            imagePullPolicy: Always
+            name: deckschrubber
+            resources:
+              limits:
+                cpu: 50m
+                memory: 256Mi
+              requests:
+                cpu: 50m
+                memory: 256Mi
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+          dnsPolicy: ClusterFirst
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+  schedule: "0 */3 * * *"
+  successfulJobsHistoryLimit: 1
+  suspend: false
